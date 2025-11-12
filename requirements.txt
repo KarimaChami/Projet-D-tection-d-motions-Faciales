@@ -1,2 +1,3 @@
 tensorflow
 matplotlib
+psycopg2-binary
