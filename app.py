@@ -3,8 +3,8 @@ from sqlalchemy.orm import Session
 import cv2
 import numpy as np
 from tensorflow.keras.models import load_model
-from database import SessionLocal, engine, Base, Prediction
-import shutil
+from db import SessionLocal, engine, Base, Prediction
+
 
 # Créer les tables si elles n'existent pas
 Base.metadata.create_all(bind=engine)
@@ -12,7 +12,7 @@ Base.metadata.create_all(bind=engine)
 app = FastAPI()
 
 # Charger le modèle
-model = load_model("models/CNN_model.h5")
+model = load_model("models/emotion_cnn_model.h5")
 emotion_labels = ['Angry', 'Disgusted', 'Fearful', 'Happy', 'Neutral', 'Sad', 'Surprised']
 
 # Dépendance pour la session SQLAlchemy
@@ -30,8 +30,8 @@ face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_fronta
 async def predict_emotion(file: UploadFile = File(...), db: Session = Depends(get_db)):
     # Sauvegarder temporairement l'image
     temp_file = f"temp_{file.filename}"
-    with open(temp_file, "wb") as buffer:
-        shutil.copyfileobj(file.file, buffer)
+    with open(temp_file, "wb") as f:
+        f.write(await file.read())
 
     # Lire l'image et détecter les visages
     img = cv2.imread(temp_file)
@@ -44,7 +44,7 @@ async def predict_emotion(file: UploadFile = File(...), db: Session = Depends(ge
         face_img = img[y:y+h, x:x+w]
         face_img = cv2.resize(face_img, (48,48))
         face_img = cv2.cvtColor(face_img, cv2.COLOR_BGR2RGB)
-        face_img = face_img.astype("float32") / 255.0
+        # face_img = face_img.astype("float32") / 255.0
         face_img = np.expand_dims(face_img, axis=0)
 
         pred = model.predict(face_img)

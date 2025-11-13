@@ -1,3 +1,10 @@
 tensorflow
 matplotlib
 psycopg2-binary
+pytest
+numpy
+fastapi
+uvicorn
+sqlalchemy
+opencv-python
+python-dotenv

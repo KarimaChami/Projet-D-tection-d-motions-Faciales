@@ -2,8 +2,21 @@ from sqlalchemy import create_engine, Column, Integer, String, Float, DateTime
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 import datetime
+from dotenv import dotenv_values
 
-DATABASE_URL = "postgresql://user:password@localhost:5432/your_db"
+
+# Charger les variables du fichier .env
+config = dotenv_values(".env")
+DB_USER = config["DB_USER"]
+DB_PASSWORD = config["DB_PASSWRD"]
+DB_NAME = config["DB_NAME"]
+DB_HOST = config["DB_HOST"]
+DB_PORT = config["DB_PORT"]
+
+
+
+DATABASE_URL = f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+
 
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(bind=engine)
