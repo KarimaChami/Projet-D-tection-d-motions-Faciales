@@ -1,7 +1,6 @@
-from sqlalchemy import create_engine, Column, Integer, String, Float, DateTime
+from sqlalchemy import create_engine
 from sqlalchemy.orm import declarative_base
 from sqlalchemy.orm import sessionmaker
-import datetime
 from dotenv import dotenv_values
 
 
@@ -22,12 +21,3 @@ DATABASE_URL = f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NA
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(bind=engine)
 Base = declarative_base()
-
-class Prediction(Base):
-    
-    __tablename__ = "predictions"
-
-    id = Column(Integer, primary_key=True, index=True)
-    emotion = Column(String)
-    confidence = Column(Float)
-    timestamp = Column(DateTime, default=datetime.datetime.utcnow)

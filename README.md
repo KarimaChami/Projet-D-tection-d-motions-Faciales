@@ -12,15 +12,15 @@ L’objectif final est de fournir une API simple et efficace qui :
 
 ---
 
-## 👥 Travail en Binôme
+## 👥 Travail individuel
 
 ### Rôles et Responsabilités
 
-* **Développeur Backend :**
-
-  * Création de la structure FastAPI.
-  * Intégration de la base de données SQLite avec SQLAlchemy.
-  * Développement des routes `POST /patients` et `GET /patients`.
+* **Base de données :**
+Les prédictions sont stockées avec :
+  * émotion (String)
+  * confiance (Float)
+  * timestamp auto-généré (UTC)
 
 * **Développeur IA / Data :**
 
@@ -41,11 +41,10 @@ L’objectif final est de fournir une API simple et efficace qui :
 ## ⚙️ Technologies Utilisées
 
 * **Backend :** FastAPI
-* **Base de données :** SQLite + SQLAlchemy
+* **Base de données :** PostgreSql
 * **Validation :** Pydantic
-* **Machine Learning :** Scikit-learn
+* **Machine Learning :** Scikit-learn 
 * **Tests :** Pytest + TestClient
-* **Documentation :** Swagger (intégré à FastAPI)
 * **Gestion de version :** GitHub
 
 ---
@@ -53,22 +52,26 @@ L’objectif final est de fournir une API simple et efficace qui :
 ## 🧱 Structure du Projet
 
 ```
-📁 API-de-machine-learning
+📁 Projet-D-tection-d-motions-Faciales
 │
 ├── backend/
-│   ├── app.py  
-│   ├── cardio_model.pkl        
-│   ├── config.py             
-│   ├── models.py                
-│   |── schemas.py
-|   └──test_api.py               
-│── ml/
-│   ├── eda.ipynb     
-│   └── model_training.ipynb   
-│
-├── data.csv                             
-├── requirements.txt
-└── README.md
+│   ├── app.py        
+│   ├── db.py                           
+│   |── schemas.py             
+│── models/
+│   ├── emotion_cnn_model.h5      
+├── Notebook/
+│   ├── images/ 
+│   ├── detect_and_predict.py       
+├── test/
+│   ├── __init__.py
+│   ├── test_model.py
+├── test/
+│   ├──workflows/
+│   │  ├──.github/
+│   │     ├──test.yml                           
+├── README.md
+└── requirements.txt
 ```
 
 ---
@@ -78,14 +81,14 @@ L’objectif final est de fournir une API simple et efficace qui :
 ### 1. Cloner le projet
 
 ```bash
-git clone https://github.com/khaoula1025/API-de-machine-learning.git
-cd API-de-machine-learning
+git clone https://github.com/KarimaChami/Projet-D-tection-d-motions-Faciales.git
+cd Projet-D-tection-d-motions-Faciales
 ```
 
 ### 2. Créer un environnement virtuel
 
 ```bash
-python -m venv env
+python -m venv venv
 source env/bin/activate       # macOS / Linux
 env\Scripts\activate          # Windows
 ```
@@ -114,79 +117,37 @@ http://127.0.0.1:8000/docs
 
 ## 📡 Endpoints Principaux
 
-### ➕ POST /patients
+### ➕ POST /predict_emotion
 
-Ajoute un nouveau patient à la base de données.
-**Exemple de requête :**
-
-```json
-{
-        "age": 50,
-        "gender": 0,
-        "pressurehight": 21,
-        "pressurelow": 9,
-        "glucose":11,
-        "kcm":11.8,
-        "troponin":5.9,
-        "impluse":8
-    }
-```
----
-
-### 📋 GET /patients
-
-Liste tous les patients enregistrés.
-**Réponse :**
-
-```json
-[
-  {
-        "age": 50,
-        "gender": 0,
-        "pressurehight": 21,
-        "pressurelow": 9,
-        "glucose":11,
-        "kcm":11.8,
-        "troponin":5.9,
-        "impluse":8
-    }
-]
-```
-
----
-
-### 🧠 POST /predict
-
-Prend les données d’un patient et retourne si  **le patient risque d'avoir cette maladie ou pas **.
+Reçoit un fichier image via UploadFile, détecter le visage,Passe la région du visage au modèle CNN pour la prédiction puis Retourne l’émotion prédite et le score et Chaque prédiction est automatiquement insérée dans la base
 
 **Exemple de requête :**
-
-```json
-{
-        "age": 50,
-        "gender": 0,
-        "pressurehight": 21,
-        "pressurelow": 9,
-        "glucose":11,
-        "kcm":11.8,
-        "troponin":5.9,
-        "impluse":8
-    }
-```
-
+passer une image d'un person en colère
 **Réponse :**
 
 ```json
 {
-  "prediction": 0,
-  "message": " Aucun risque détecté"
+  "predictions": [
+    {
+      "emotion": "Angry",
+      "confidence": 0.5139312744140625
+    }
+  ],
+  "num_faces": 1
 }
 ```
+
+### 📋 GET /history
+
+Lister tous les prédictions enregistrées dans la base PostgreSQL.
 
 ---
 
 ## 🧪 Tests Unitaires
-
+**test_sauvegarde_model() :**
+    Vérifier que ton modèle est bien sauvegarde et peut etre recharge sans erreur
+**test_sauvegarde_model() :**
+    Vérification du format de la prédiction.
 ### Lancer les tests
 
 ```bash
@@ -195,7 +156,7 @@ pytest -v
 
 ### Vérifications principales
 
-* Le statut `200` pour la route `/predict`
+* Le statut `200` pour les routes
 * Les données des patients bien enregistrées et listées
 
 ---
@@ -258,9 +219,8 @@ pytest -v
 
 ---
 
-## 🧑‍💻 Auteurs
+## 🧑‍💻 Auteur
 
 * **Karima Chami** – Développeuse Backend
-* **Khaoula Esioudi** – Développeur IA / Data
 
 Projet réalisé dans le cadre du **brief API de Machine Learning** – Simplon Maghreb, 2025.

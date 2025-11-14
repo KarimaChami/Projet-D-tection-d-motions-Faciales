@@ -3,8 +3,9 @@ from sqlalchemy.orm import Session
 import cv2
 import numpy as np
 from tensorflow.keras.models import load_model
-from db import SessionLocal, engine, Base, Prediction
-
+from backend.db import SessionLocal, engine, Base
+from backend.schemas import Prediction
+from Notebook.detect_and_predict import detect_and_predict
 
 # Créer les tables si elles n'existent pas
 Base.metadata.create_all(bind=engine)
@@ -28,38 +29,25 @@ face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_fronta
 
 @app.post("/predict_emotion")
 async def predict_emotion(file: UploadFile = File(...), db: Session = Depends(get_db)):
-    # Sauvegarder temporairement l'image
+      # Save temporary image
     temp_file = f"temp_{file.filename}"
     with open(temp_file, "wb") as f:
         f.write(await file.read())
 
-    # Lire l'image et détecter les visages
-    img = cv2.imread(temp_file)
-    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    faces = face_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5)
+    # Call ML function
+    predictions = detect_and_predict(temp_file,show=False)
 
-    predictions = []
-
-    for (x, y, w, h) in faces:
-        face_img = img[y:y+h, x:x+w]
-        face_img = cv2.resize(face_img, (48,48))
-        face_img = cv2.cvtColor(face_img, cv2.COLOR_BGR2RGB)
-        # face_img = face_img.astype("float32") / 255.0
-        face_img = np.expand_dims(face_img, axis=0)
-
-        pred = model.predict(face_img)
-        emotion_idx = np.argmax(pred)
-        emotion = emotion_labels[emotion_idx]
-        confidence = float(np.max(pred))
-
-        # Sauvegarder la prédiction dans la DB
-        db_pred = Prediction(emotion=emotion, confidence=confidence)
+    # Save each prediction in DB
+    for pred in predictions:
+        db_pred = Prediction(
+            emotion=pred["emotion"],
+            confidence=pred["confidence"]
+        )
         db.add(db_pred)
-        db.commit()
+    db.commit()
 
-        predictions.append({"emotion": emotion, "confidence": confidence})
+    return {"predictions": predictions, "num_faces": len(predictions)}
 
-    return {"predictions": predictions, "num_faces": len(faces)}
 
 @app.get("/history")
 def get_history(db: Session = Depends(get_db)):

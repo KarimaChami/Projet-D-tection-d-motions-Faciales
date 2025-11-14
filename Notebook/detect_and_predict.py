@@ -4,7 +4,12 @@ import cv2
 import numpy as np
 
 # Charger le modèle
-model = load_model("../models/emotion_cnn_model.h5")
+import os
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+MODEL_PATH = os.path.join(BASE_DIR, "..", "models", "emotion_cnn_model.h5")
+
+model = load_model(MODEL_PATH)
 print("model.input_shape:", model.input_shape)
 print("model.output_shape:", model.output_shape)
 # Charger le classifieur HaarCascade
@@ -12,7 +17,7 @@ face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_fronta
 
 emotion_labels = ['Angry', 'Disgusted', 'Fearful', 'Happy', 'Neutral', 'Sad', 'Surprisd']
 
-def detect_and_predict(image_path):
+def detect_and_predict(image_path,show=False):
     # Lire l'image
     img = cv2.imread(image_path)
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -42,19 +47,20 @@ def detect_and_predict(image_path):
       predictions.append({
             "emotion": emotion,
             "confidence": float(confidence),
-            "box": [int(x), int(y), int(w), int(h)]
         })
 
     # Convertir BGR → RGB pour Matplotlib et afficher
-    img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-    plt.figure(figsize=(5, 8))
-    plt.imshow(img_rgb)
-    plt.axis('off')
-    plt.show()
+    if show :
+        img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        plt.figure(figsize=(5, 8))
+        plt.imshow(img_rgb)
+        plt.axis('off')
+        plt.show()
 
     return predictions
 
 
 # Tester
-results = detect_and_predict("img.jpg")  # <- récupérer la liste des prédictions
-print(results)  # pour voir le dictionnaire avec emotion, confidence, box
+if __name__ == "__main__":
+    results = detect_and_predict("images/img.jpg",show=True)
+    print(results)
