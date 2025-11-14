@@ -38,7 +38,7 @@ L'API utilise une combinaison de **vision par ordinateur** (OpenCV/Haar Cascade)
 ### Rôles et Responsabilités
 
 * **Entraînement et Modélisation du CNN :**
-Le modèle a été développé dans le notebook training/emotion_cnn_training.ipynb.
+Le modèle a été développé dans le notebook training/emotion_cnn_training.ipynb on utilisant googleColab.
   * Architecture : CNN séquentiel avec Conv2D, MaxPooling2D, Flatten, Dense, et Dropout.
   * Perte : categorical_crossentropy.
   * Optimiseur : adam.
