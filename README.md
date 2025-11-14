@@ -2,55 +2,15 @@
 
 ## 📘 Contexte du Projet
 
-Ce projet consiste à **détecter les visages** dans des images.puis à **prédire l’émotion** à l’aide de CNN (TensorFlow/Keras) et de **Haar Cascade (OpenCV)**,et intégrer ce modèle dans une API FastAPI connectée à une base de données **PostgreSQL**.
+Ce projet est un prototype d'**API d'Intelligence Artificielle** conçu pour l'analyse émotionnelle à partir d'images faciales. L'objectif est de valider la faisabilité d'un futur produit SaaS capable de mesurer les réactions des utilisateurs lors de tests produits ou d'expériences UX.
+
+L'API utilise une combinaison de **vision par ordinateur** (OpenCV/Haar Cascade) et d'**apprentissage profond** (CNN) pour :
+1. **Détecter** un visage sur une image.
+2. **Prédire** l'émotion correspondante.
+3. **Enregistrer** l'historique des prédictions dans une base de données **PostgreSQL**.
 
 
-L’objectif final est de fournir une API simple et efficace qui :
-
-* Enregistre les informations d’un patient dans une base de données.
-* Retourne un **score de risque cardiovasculaire** à l’aide d’un modèle de Machine Learning.
-
----
-
-## 👥 Travail individuel
-
-### Rôles et Responsabilités
-
-* **Base de données :**
-Les prédictions sont stockées avec :
-  * émotion (String)
-  * confiance (Float)
-  * timestamp auto-généré (UTC)
-
-* **Développeur IA / Data :**
-
-  * Nettoyage et préparation du dataset.
-  * Entraînement et sauvegarde du modèle de Machine Learning.
-  * Intégration du modèle dans la route `/predict_risk`.
-
-### Collaboration GitHub
-
-* Une branche `main`.
-* Deux branches de fonctionnalités :
-
-  * `feature/api`
-  * `feature/ml`
-
----
-
-## ⚙️ Technologies Utilisées
-
-* **Backend :** FastAPI
-* **Base de données :** PostgreSql
-* **Validation :** Pydantic
-* **Machine Learning :** Scikit-learn 
-* **Tests :** Pytest + TestClient
-* **Gestion de version :** GitHub
-
----
-
-## 🧱 Structure du Projet
-
+## 📂 Structure du projet
 ```
 📁 Projet-D-tection-d-motions-Faciales
 │
@@ -73,8 +33,40 @@ Les prédictions sont stockées avec :
 ├── README.md
 └── requirements.txt
 ```
+## 👥 Travail individuel
+
+### Rôles et Responsabilités
+
+* **Entraînement et Modélisation du CNN :**
+Le modèle a été développé dans le notebook training/emotion_cnn_training.ipynb.
+  * Architecture : CNN séquentiel avec Conv2D, MaxPooling2D, Flatten, Dense, et Dropout.
+  * Perte : categorical_crossentropy.
+  * Optimiseur : adam.
+  * Prétraitement : Normalisation et Augmentation des données pour améliorer la performance.
+  * Modèle Sauvegardé : training/models/emotion_model.h5.
+
+* **Base de données :**
+Les prédictions sont stockées avec :
+  * émotion (String)
+  * confiance (Float)
+  * timestamp auto-généré (UTC)
+
 
 ---
+
+## 🛠️ Stack Technique
+
+* **Langage :** Python 3.x
+* **API Web :** FastAPI
+* **Modèle ML :** TensorFlow / Keras (CNN)
+* **Vision par Ordinateur :** OpenCV (pour la détection faciale via Haar Cascade)
+* **Base de Données :** PostgreSQL
+* **ORM :** SQLAlchemy
+* **Tests :** `pytest`
+* **CI/CD :** GitHub Actions
+
+---
+
 
 ## 🚀 Installation & Lancement
 
@@ -157,70 +149,43 @@ pytest -v
 ### Vérifications principales
 
 * Le statut `200` pour les routes
-* Les données des patients bien enregistrées et listées
+* Les predictions bien enregistrées et listées
 
 ---
 
-## 📊 Partie Machine Learning
+---
+### GitHub Actions
 
-### Étapes principales :
-
-1. Chargement et nettoyage du dataset.
-2. Transformation des variables numériques et catégorielles.
-3. Séparation des données : `X` (features) et `y` (cible).
-4. Création d’un **pipeline Scikit-learn** (préprocessing + modèle).
-5. Entraînement du modèle.
-6. Sauvegarde du modèle :
-
-   ```python
-   joblib.dump(model, "model.joblib")
-   ```
-7. (Bonus) Optimisation avec `GridSearchCV`.
+Un workflow est configuré pour exécuter automatiquement les tests unitaires à chaque push ou Pull Request, assurant une intégration continue stable.
 
 ---
 
-## 🧾 Modalités Pédagogiques
-
-* **Travail en binôme**
-* **Durée :** 5 jours (du 27/10/2025 au 31/10/2025)
-* **Livraison :**
-
-  * API fonctionnelle
-  * Modèle ML intégré
-  * Tests unitaires validés
-  * Documentation complète (README + Swagger)
-
----
 
 ## 📦 Livrables
 
-1. Code source complet sur GitHub.
-2. Base SQLite contenant les patients.
-3. Modèle ML entraîné (`model.joblib`).
-4. Tests unitaires (`pytest`).
-5. Documentation :
-
+1. Notebook d’entraînement du CNN.
+2. Script detect_and_predict.py (OpenCV + CNN).
+3. API FastAPI (main.py) avec routes /predict_emotion et /history.
+4. Base PostgreSQL fonctionnelle.
+5. Tests unitaires + workflow GitHub Actions.
+6. Projet versionné sur GitHub.
+6. Documentation :
    * `README.md`
-   * Swagger `/docs`
-6. Lien Jira du projet.
+   * `requirements.txt`
+7. Lien Jira du projet.
 
 ---
 
 ## 🏁 Critères de Performance
 
-| Critère           | Description                                           |
-| ----------------- | ----------------------------------------------------- |
-| ✅ Fonctionnalité  | Routes `/patients` et `/predict_risk` opérationnelles |
-| ✅ Précision       | Modèle bien entraîné et intégré                       |
-| ✅ Qualité du Code | Structure claire, bien commentée                      |
-| ✅ Collaboration   | Branches Git bien gérées et commits cohérents         |
-| ✅ Documentation   | README complet + Swagger                              |
-| ✅ Tests           | API validée par Pytest                                |
 
+| ✅ Précision et cohérence des prédictions. 
+| ✅ Bon fonctionnement de la détection faciale.      
+| ✅ Intégration stable du modèle dans l’API. 
+| ✅ Historique PostgreSQL fonctionnel.   
+| ✅ Jira                             |
+                                       |
 ---
 
-## 🧑‍💻 Auteur
 
-* **Karima Chami** – Développeuse Backend
-
-Projet réalisé dans le cadre du **brief API de Machine Learning** – Simplon Maghreb, 2025.
+Projet réalisé par **Karima Chami**  dans le cadre du **brief API de Machine Learning** – Simplon Maghreb, 2025.
