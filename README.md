@@ -188,4 +188,4 @@ Un workflow est configuré pour exécuter automatiquement les tests unitaires à
 ---
 
 
-Projet réalisé par **Karima Chami**  dans le cadre du **brief API de Machine Learning** – Simplon Maghreb, 2025.
+Projet réalisé par **Karima Chami**  dans le cadre d' **API d'Intelligence Artificielle** – Simplon Maghreb, 2025.
