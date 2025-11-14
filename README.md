@@ -184,7 +184,7 @@ Un workflow est configuré pour exécuter automatiquement les tests unitaires à
 | ✅ Intégration stable du modèle dans l’API. 
 | ✅ Historique PostgreSQL fonctionnel.   
 | ✅ Jira                             |
-                                       |
+                                    
 ---
 
 
