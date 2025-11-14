@@ -1,5 +1,5 @@
 from sqlalchemy import create_engine, Column, Integer, String, Float, DateTime
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import declarative_base
 from sqlalchemy.orm import sessionmaker
 import datetime
 from dotenv import dotenv_values
@@ -7,8 +7,9 @@ from dotenv import dotenv_values
 
 # Charger les variables du fichier .env
 config = dotenv_values(".env")
+
 DB_USER = config["DB_USER"]
-DB_PASSWORD = config["DB_PASSWRD"]
+DB_PASSWORD = config["DB_PASSWORD"]
 DB_NAME = config["DB_NAME"]
 DB_HOST = config["DB_HOST"]
 DB_PORT = config["DB_PORT"]
