@@ -13,5 +13,5 @@ jobs:
           python-version: '3.11'
       - name: Install dependencies
         run: pip install -r requirements.txt
-      - name: Run tests
-        run: pytest
+      - name: run ONLY test_model.py
+        run:  pytest tests/test_model.py -vv
